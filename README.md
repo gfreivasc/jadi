@@ -177,10 +177,8 @@ Yet another hacky trick, the target application cannot read jadi's internal data
 So we will have to place dllName somewhere the remote process can read. That is, of course, it's own memory.
 
 ### Write the memory, save it's address
-Thanks to our holy handle, we can do it! First we need to save space in to place our data. We'll need to allocate space
-in process memory and save it's address. We're saving the address of a space in the remote process' memory in one of our pointers.
-If you guessed we'd need long pointers, you were right!
-[`VirtualAllocEx`](https://msdn.microsoft.com/pt-br/library/windows/desktop/aa366890(v=vs.85).aspx) is what we need.
+Thanks to our holy handle, we can do it! First we need to save space in our target memory to place our data. We'll need to allocate a range in process memory and save it's address. This address will have to be placed in an specific kind of pointer given that it lies in a different application. If you guessed we'd use long pointers, you were right!
+To reserve our spot in the remote process' memory, [`VirtualAllocEx`](https://msdn.microsoft.com/pt-br/library/windows/desktop/aa366890(v=vs.85).aspx) is what we need.
 After we have this space allocated, we write to it (once again, through the handle, it's not our memory).
 Instead of a simple `strcpy`, we'll have to ask almighty [`WriteProcessMemory`](https://msdn.microsoft.com/pt-br/library/windows/desktop/ms681674(v=vs.85).aspx) for help.
 Finally, we have:
